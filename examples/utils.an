@@ -1,0 +1,5 @@
+# Random number
+random(1, 190)
+
+# Date 
+date()
