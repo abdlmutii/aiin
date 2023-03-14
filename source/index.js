@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Code made in 1 day 😃.
 
 const fs = require('fs');
 
