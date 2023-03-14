@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-// Code made in 1 day 😃.
 
 const fs = require('fs');
 
@@ -41,7 +40,7 @@ async function executeFile(file) {
 
        if(right === "true" || right === "false") result = eval(`(${vars[left]})`) == eval(`(${right})`);
 
-       else re81172226sult = eval(`(${vars[left]})`) == eval(`(${vars[right]})`);
+       else result = eval(`(${vars[left]})`) == eval(`(${vars[right]})`);
 
      
 
@@ -113,37 +112,39 @@ async function executeFile(file) {
 
         console.log(Math.floor(Math.random() * (max - min + 1) + min));
 
-      } else if (line.startsWith("ask(")) {
+      }
 
-        const promptArgs = line.match(/ask\((.*)\)/)[1].split(',');
+      if (line.startsWith("ask(")) {
 
-        let message = promptArgs[0].trim().replace(/^"(.*)"$/, '$1').replace(/^'(.*)'$/, '$1');
+      const promptArgs = line.match(/ask\((.*)\)/)[1].split(',');
 
-        message = message.replace(/{random\((.*)\)}/g, (_, args) => {
+      let message = promptArgs[0].trim().replace(/^"(.*)"$/, '$1').replace(/^'(.*)'$/, '$1');
 
-          const [min, max] = args.split(',').map(arg => parseInt(arg.trim()));
+      message = message.replace(/{random\((.*)\)}/g, (_, args) => {
 
-          return Math.floor(Math.random() * (max - min + 1) + min);
+        const [min, max] = args.split(',').map(arg => parseInt(arg.trim()));
 
-        });
+        return Math.floor(Math.random() * (max - min + 1) + min);
 
-        if (Object.keys(vars).length > 0) {
+      });
 
-          message = message.replace(/\{([^}]+)\}/g, (_, key) => {
+      if (Object.keys(vars).length > 0) {
 
-            if (!key.includes(".")) {
+        message = message.replace(/\{([^}]+)\}/g, (_, key) => {
 
-              const mathRegex = /^([\d\s\.\*\+\-\x\/\(\)]+)$/;
+          if (!key.includes(".")) {
 
-              if (mathRegex.test(key)) {
+            const mathRegex = /^([\d\s\.\*\+\-\x\/\(\)]+)$/;
 
-                const result = eval(key.replaceAll("x", "*"));
+            if (mathRegex.test(key)) {
 
-                return result;
+              const result = eval(key.replaceAll("x", "*"));
 
-              }
+              return result;
 
-              return vars[key] || `blank`;
+            }
+
+            return vars[key] || `blank`;
 
           } else {
 
@@ -163,15 +164,19 @@ async function executeFile(file) {
 
         });
 
-        console.log(message.replaceAll(`"`, ``).replaceAll(`'`, ``).replaceAll("`", ``));
-
-      } else {
-
-        console.log(message.replaceAll(`"`, ``).replaceAll(`'`, ``).replaceAll("`", ``));
+       message = message;
 
       }
 
-    } 
+      const type = promptArgs[1] ? promptArgs[1].trim().replace(/^"(.*)"$/, '$1').replace(/^'(.*)'$/, '$1') : 'input';
+
+      const name = promptArgs[2] ? promptArgs[2].trim().replace(/^"(.*)"$/, '$1').replace(/^'(.*)'$/, '$1') : 'prompt';
+
+      const response = await prompt([{ type, name, message }]);
+
+      vars[name] = response[name] || "false";
+
+      }
 
        if (line.match(/log\(("|')(.*)\1\)/)) {
 
@@ -541,9 +546,53 @@ console.log(tu);
 
    if (line.match(/^\s*([a-zA-Z0-9_]+)\s*=\s*(.*)\s*$/)) {
 
+      if(line.match(/^\s*([a-zA-Z0-9_]+)\s*=\s*(.*)\s*$/)[2].startsWith("fetch(")) {
+
+   const str = line.match(/^\s*([a-zA-Z0-9_]+)\s*=\s*(.*)\s*$/)[2];
+
+// extract the URL using regex
+
+const urlRegex = /fetch\(["']([^"']+)["']/;
+
+const urlMatch = str.match(urlRegex);
+
+const url = urlMatch[1];
+
+const regex = /fetch\((.*)\)/;
+
+const objStr = str.match(regex)[1];
+
+let obj;
+
+let data;
+
+if(!objStr) {
+
+  obj = {};
+
+  data = await axios(url);
+
+}
+
+else if(objStr) {
+
+  obj = eval(`(${objStr})`);
+
+  obj.url = url;
+
+  data = await axios(obj);
+
+}
+
+vars[line.match(/^\s*([a-zA-Z0-9_]+)\s*=\s*(.*)\s*$/)[1].replaceAll(`"`, ``).replaceAll(`'`, ``).replaceAll("`", ``)] = data.data;
+
+      } else {
+
       vars[line.match(/^\s*([a-zA-Z0-9_]+)\s*=\s*(.*)\s*$/)[1].replaceAll(`"`, ``).replaceAll(`'`, ``).replaceAll("`", ``)] = eval(`(${line.match(/^\s*([a-zA-Z0-9_]+)\s*=\s*(.*)\s*$/)[2]})`);
 
-    }
+      }
+
+   }
 
     if (line.startsWith("if(")) {
 
@@ -553,13 +602,17 @@ console.log(tu);
 
       let result;
 
-      if (operator === "==") {
+      if (operator === "is") {
 
-        result = vars[left] == vars[right];
+        if(right === "true" || right === "false") result = eval(`(${vars[left]})`) == eval(`(${right})`);
 
-      } else if (operator === "===") {
+       else result = eval(`(${vars[left]})`) == eval(`(${vars[right]})`); 
 
-        result = vars[left] === vars[right];
+      } else if(operator === 'isnt') {
+
+        if(right === "true" || right === "false") result = eval(`(${vars[left]})`) !== eval(`(${right})`);
+
+       else result = eval(`(${vars[left]})`) !== eval(`(${vars[right]})`);
 
       } else if (operator === ">") {
 
@@ -633,7 +686,9 @@ if (filename === '.') {
 
 if (!filename) {
 
-  console.error('No file specified.');
+  console.error('Try running "aiin {filename}.an / {filename}.aiin"');
+
+  console.log("I will work on repl for aiin.. still working on it.")
 
   process.exit(1);
 
@@ -641,7 +696,7 @@ if (!filename) {
 
 if (!fs.existsSync(filename)) {
 
-  console.error(`File "${filename}" not found.`);
+  console.error(`No file with the "${filename}" name.`);
 
   process.exit(1);
 
