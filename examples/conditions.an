@@ -1,0 +1,9 @@
+# Conditions
+if(1 is 2) {
+log("1 is 2?, weird..")
+}
+
+gamer = {plays: "lol", mad: true}
+if(gamer.plays is lol) {
+ log("know i know why he's mad.")
+}
