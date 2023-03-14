@@ -1,0 +1,7 @@
+# fetching ( no options )
+res = fetch("https://getapi.example")
+log(res)
+
+# fetching ( with options )
+res = fetch("https://postapi.example", {method: "post", data: {name: "John doe", age: 18}}
+log(res)
