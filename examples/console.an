@@ -1,0 +1,9 @@
+# log 
+name = "Seif"
+log("My nane is {name}") # can use variables!
+log(name)
+
+# prompt
+ask("What's your name again?", "input", "user_name") # "input" here is the type of the prompt. can be 
+
+
