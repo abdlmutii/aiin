@@ -1,4 +1,4 @@
-# Aiin
+# 👁️ Aiin
 Aiin is a beta-level programming language that is currently being developed. This is a simple language that is easy to learn and understand, and is used to build simple scripts and command-line applications. The programming language uses simple English phrases to build programs.
 
 ## How to Install?
