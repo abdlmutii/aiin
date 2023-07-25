@@ -1,4 +1,4 @@
-# 👁️ Aiin
+# Aiin Lang
 <a href="https://discord.gg/8UqPNbeYBv"><img src="https://img.shields.io/discord/1077492444574261339?style=for-the-badge&color=5865F2&logo=discord&logoColor=white&label=Abdlmu'tii" alt="Discord server" /></a><br>
 Aiin is a beta-level programming language that is currently being developed. This is a simple language that is easy to learn and understand, and is used to build simple scripts and command-line applications. The programming language uses simple English phrases to build programs.
 
